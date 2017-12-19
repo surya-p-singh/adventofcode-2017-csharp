@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Spiral_Memory
 {
     [TestFixture]
-    public class Class1
+    public class SpiralMemoryPart1
     {
         [TestCase(27, 4)]
         [TestCase(35, 4)]
@@ -28,79 +28,91 @@ namespace Spiral_Memory
         [TestCase(347991, 480)]
         public void A(int input, int expected)
         {
-
-            //var input = 27;
-            //var input = 347991;
-            int lastSpiralLength = 0;
+            int numberOfElementsInLastSpiral;
 
             var sqrt = Math.Sqrt(input);
             
-            if (IsAOddInteger(sqrt))
+            if (IsOddInteger(sqrt))
             {
-                lastSpiralLength = (int)sqrt;
+                numberOfElementsInLastSpiral = (int)sqrt;
             }
-            else if (IsAEvenInteger(sqrt))
+            else if (IsEvenInteger(sqrt))
             {
-                lastSpiralLength = (int) sqrt +1;
+                numberOfElementsInLastSpiral = (int) sqrt + 1;
             }
             else
             {
-                lastSpiralLength = (int)sqrt + 2;
+                numberOfElementsInLastSpiral = (int)sqrt + 2;
             }
 
-            var lastSpiralMax = Math.Pow(lastSpiralLength, 2);
+            var maxNumberInLastSpiral = Math.Pow(numberOfElementsInLastSpiral, 2);
 
-            double lastSpiralLengthDividedByTwo = lastSpiralLength / 2;
-            var centrePoint = Math.Floor(lastSpiralLengthDividedByTwo);
+            double lastSpiralLengthDividedByTwo = numberOfElementsInLastSpiral / 2;
+            var centralPoint = Math.Floor(lastSpiralLengthDividedByTwo);
 
-            var position = Math.Abs(input - lastSpiralMax);
-
-            var bottomRightPoint = lastSpiralMax;
-            var bottomLeftPoint = lastSpiralMax - (lastSpiralLength-1);
-            var topLeftPoint = bottomLeftPoint - (lastSpiralLength - 1);
-            var topRightPoint = topLeftPoint - (lastSpiralLength - 1);
-
-            var right = topRightPoint - input;
-            var top = topLeftPoint - input;
-            var left = bottomLeftPoint - input;
-            var bottom = bottomRightPoint - input;
+            var bottomRightCornerNumber = maxNumberInLastSpiral;
+            var bottomLeftCornerNumber = maxNumberInLastSpiral - (numberOfElementsInLastSpiral-1);
+            var topLeftCornerNumber = bottomLeftCornerNumber - (numberOfElementsInLastSpiral - 1);
+            var topRightCornerNumber = topLeftCornerNumber - (numberOfElementsInLastSpiral - 1);
 
             double value = 0;
-            if (right < lastSpiralLength && right >= 0)
+            if (IsNumberExistInRightSideOfSquare(topRightCornerNumber, input, numberOfElementsInLastSpiral))
             {
-                value = topRightPoint - centrePoint - input;
-                Console.WriteLine(value + (int)centrePoint);
+                value = topRightCornerNumber - centralPoint - input;
             }
 
-            if (top < lastSpiralLength && top >= 0)
+            if (IsNumberExistInTopSideOfSquare(topLeftCornerNumber, input, numberOfElementsInLastSpiral))
             {
-                value = topLeftPoint - centrePoint - input;
-                Console.WriteLine(Math.Abs(value) + (int)centrePoint);
+                value = topLeftCornerNumber - centralPoint - input;
             }
 
-            if (left < lastSpiralLength && left >= 0)
+            if (IsNumberExistInLeftSideOfSquare(bottomLeftCornerNumber, input, numberOfElementsInLastSpiral))
             {
-                value = bottomLeftPoint - centrePoint - input;
-                Console.WriteLine(Math.Abs(value) + (int)centrePoint);
+                value = bottomLeftCornerNumber - centralPoint - input;
             }
 
-            if (bottom < lastSpiralLength && bottom >= 0)
+            if (IsNumberExistInBottomSideOfSquare(bottomRightCornerNumber, input, numberOfElementsInLastSpiral))
             {
-                value = bottomRightPoint - centrePoint - input;
-                Console.WriteLine(Math.Abs(value) + (int)centrePoint);
+                value = bottomRightCornerNumber - centralPoint - input;
             }
 
-            Assert.That((int)(Math.Abs(value) + (int)centrePoint), Is.EqualTo(expected));
+            var distanceFromCenter = (int)(Math.Abs(value) + (int)centralPoint);
+
+            Assert.That(distanceFromCenter, Is.EqualTo(expected));
         }
 
-        private static bool IsAEvenInteger(double sqrt)
+        private static bool IsOddInteger(double sqrt)
+        {
+            return sqrt % 1 == 0 && sqrt % 2 == 1;
+        }
+
+        private static bool IsEvenInteger(double sqrt)
         {
             return Math.Floor(sqrt) % 2 == 0;
         }
 
-        private static bool IsAOddInteger(double sqrt)
+        private bool IsNumberExistInBottomSideOfSquare(double bottomRightCornerNumber, int input, int numberOfElementsInLastSpiral)
         {
-            return sqrt % 1 == 0 && sqrt % 2 == 1;
+            var calculation = bottomRightCornerNumber - input;
+            return calculation < numberOfElementsInLastSpiral && calculation >= 0;
+        }
+
+        private bool IsNumberExistInLeftSideOfSquare(double bottomLeftCornerNumber, int input, int numberOfElementsInLastSpiral)
+        {
+            var calculation = bottomLeftCornerNumber - input;
+            return calculation < numberOfElementsInLastSpiral && calculation >= 0;
+        }
+
+        private bool IsNumberExistInTopSideOfSquare(double topLeftCornerNumber, int input, int numberOfElementsInLastSpiral)
+        {
+            var calculation = topLeftCornerNumber - input;
+            return calculation < numberOfElementsInLastSpiral && calculation >= 0;
+        }
+
+        private static bool IsNumberExistInRightSideOfSquare(double topRightCornerNumber, double input, int numberOfElementsInLastSpiral)
+        {
+            var calculation = topRightCornerNumber - input;
+            return calculation < numberOfElementsInLastSpiral && calculation >= 0;
         }
     }
 }
