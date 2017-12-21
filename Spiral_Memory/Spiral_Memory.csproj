@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpiralMemoryPart2.cs" />
+    <Compile Include="SpiralMemoryPart2Other.cs" />
     <Compile Include="SpiralMemoryPart1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
