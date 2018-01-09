@@ -33,13 +33,43 @@ namespace Spiral_Memory
 
         private Coord FindNewCoord(Coord currentCoord, Grid grid)
         {
+            if (currentCoord.X == 0 && currentCoord.Y == 0)
+            {
+                return new Coord(1,0);
+            }
+
+            if (grid.DoesBlockOnTheLeftExist(currentCoord))
+            {
+                if (grid.DoesBlockAboveExist(currentCoord))
+                {
+                    return Coord.ImmediateRight(currentCoord);
+                }
+                return Coord.ImmediateAbove(currentCoord); 
+            }
+            else if (grid.DoesBlockBelowExist(currentCoord))
+            {
+                return Coord.ImmediateLeft(currentCoord);
+            }
+            else if (grid.DoesBlockOnTheRigthExist(currentCoord))
+            {
+                return Coord.ImmediateBelow(currentCoord);
+            }
+            else if (grid.DoesBlockAboveExist(currentCoord))
+            {
+                return Coord.ImmediateRight(currentCoord);
+            }
+
             throw new NotImplementedException();
         }
-
-
+        
         private int Calculate(Coord currentCoord, Grid grid)
         {
-            throw new NotImplementedException();
+            if (currentCoord.X == 0 && currentCoord.Y == 0)
+            {
+                return 1;
+            }
+            
+            return 1;
         }
     }
 
@@ -52,6 +82,27 @@ namespace Spiral_Memory
         {
             X = x;
             Y = y;
+        }
+
+        public static Coord ImmediateLeft(Coord currentCoord)
+        {
+            return new Coord(currentCoord.X - 1, currentCoord.Y);
+        }
+
+        public static Coord ImmediateRight(Coord currentCoord)
+        {
+            return new Coord(currentCoord.X +1, currentCoord.Y);
+        }
+
+
+        public static Coord ImmediateBelow(Coord currentCoord)
+        {
+            return new Coord(currentCoord.X, currentCoord.Y-1);
+        }
+
+        public static Coord ImmediateAbove(Coord currentCoord)
+        {
+            return new Coord(currentCoord.X, currentCoord.Y + 1);
         }
     }
 
@@ -78,11 +129,35 @@ namespace Spiral_Memory
             // it will throw exception if value already exists, which good for us
         }
 
+        public bool DoesBlockExist(Coord currentCoord)
+        {
+            return Get(currentCoord.X, currentCoord.Y) != 0;
+        }
+
+
+        public bool DoesBlockOnTheLeftExist(Coord currentCoord)
+        {
+            return DoesBlockExist(Coord.ImmediateLeft(currentCoord));
+        }
+
+        public bool DoesBlockOnTheRigthExist(Coord currentCoord)
+        {
+            return DoesBlockExist(Coord.ImmediateRight(currentCoord));
+        }
+
+        public bool DoesBlockBelowExist(Coord currentCoord)
+        {
+            return DoesBlockExist(Coord.ImmediateBelow(currentCoord));
+        }
+
+        public bool DoesBlockAboveExist(Coord currentCoord)
+        {
+            return DoesBlockExist(Coord.ImmediateAbove(currentCoord));
+        }
+
         private string GetKey(int x, int y)
         {
             return $"{x},{y}";
         }
-
-
     }
 }
