@@ -15,144 +15,142 @@ namespace Spiral_Memory
 
             var grid = new Grid();
 
-            var currentCoord = new Coord(0,0);
+            var currentCoordinate = new Coordinate(0, 0);
             int newValue = 1;
-            grid.Set(currentCoord, newValue);
-            
+            grid.Set(currentCoordinate, newValue);
+
             while (newValue < input)
             {
-                currentCoord = FindNewCoord(currentCoord, grid);
-                Console.WriteLine($"Current coordinate:{currentCoord.X},{currentCoord.Y}");
+                currentCoordinate = FindNextCoordinate(currentCoordinate, grid);
+                Console.WriteLine($"Current coordinate:{currentCoordinate.X},{currentCoordinate.Y}");
 
-                newValue = Calculate(currentCoord, grid);
+                newValue = Calculate(currentCoordinate, grid);
                 Console.WriteLine($"    New value:{newValue}");
 
-                grid.Set(currentCoord, newValue);
+                grid.Set(currentCoordinate, newValue);
             }
         }
 
-        private Coord FindNewCoord(Coord currentCoord, Grid grid)
+        private Coordinate FindNextCoordinate(Coordinate currentCoordinate, Grid grid)
         {
-            if (currentCoord.X == 0 && currentCoord.Y == 0)
+            if (currentCoordinate.X == 0 && currentCoordinate.Y == 0)
             {
-                return new Coord(1,0);
+                return new Coordinate(1, 0);
             }
 
-            if (grid.DoesBlockOnTheLeftExist(currentCoord))
+            if (grid.DoesBlockOnTheLeftExist(currentCoordinate))
             {
-                if (grid.DoesBlockAboveExist(currentCoord))
+                if (grid.DoesBlockAboveExist(currentCoordinate))
                 {
-                    return Coord.ImmediateRight(currentCoord);
+                    return Coordinate.ImmediateRight(currentCoordinate);
                 }
-                return Coord.ImmediateAbove(currentCoord); 
+                return Coordinate.ImmediateAbove(currentCoordinate);
             }
-            else if (grid.DoesBlockBelowExist(currentCoord))
+            if (grid.DoesBlockBelowExist(currentCoordinate))
             {
-                return Coord.ImmediateLeft(currentCoord);
+                return Coordinate.ImmediateLeft(currentCoordinate);
             }
-            else if (grid.DoesBlockOnTheRigthExist(currentCoord))
+            if (grid.DoesBlockOnTheRigthExist(currentCoordinate))
             {
-                return Coord.ImmediateBelow(currentCoord);
+                return Coordinate.ImmediateBelow(currentCoordinate);
             }
-            else if (grid.DoesBlockAboveExist(currentCoord))
+            if (grid.DoesBlockAboveExist(currentCoordinate))
             {
-                return Coord.ImmediateRight(currentCoord);
+                return Coordinate.ImmediateRight(currentCoordinate);
             }
 
             throw new NotImplementedException();
         }
-        
-        private int Calculate(Coord currentCoord, Grid grid)
+
+        private int Calculate(Coordinate currentCoordinate, Grid grid)
         {
-            if (currentCoord.X == 0 && currentCoord.Y == 0)
+            if (currentCoordinate.X == 0 && currentCoordinate.Y == 0)
             {
                 return 1;
             }
-            
+
             return 1;
         }
     }
 
-    public class Coord
+    public class Coordinate
     {
-        public int X { get;  }
+        public int X { get; }
         public int Y { get; }
 
-        public Coord(int x, int y)
+        public Coordinate(int x, int y)
         {
             X = x;
             Y = y;
         }
 
-        public static Coord ImmediateLeft(Coord currentCoord)
+        public static Coordinate ImmediateLeft(Coordinate currentCoordinate)
         {
-            return new Coord(currentCoord.X - 1, currentCoord.Y);
+            return new Coordinate(currentCoordinate.X - 1, currentCoordinate.Y);
         }
 
-        public static Coord ImmediateRight(Coord currentCoord)
+        public static Coordinate ImmediateRight(Coordinate currentCoordinate)
         {
-            return new Coord(currentCoord.X +1, currentCoord.Y);
+            return new Coordinate(currentCoordinate.X + 1, currentCoordinate.Y);
         }
 
-
-        public static Coord ImmediateBelow(Coord currentCoord)
+        public static Coordinate ImmediateBelow(Coordinate currentCoordinate)
         {
-            return new Coord(currentCoord.X, currentCoord.Y-1);
+            return new Coordinate(currentCoordinate.X, currentCoordinate.Y - 1);
         }
 
-        public static Coord ImmediateAbove(Coord currentCoord)
+        public static Coordinate ImmediateAbove(Coordinate currentCoordinate)
         {
-            return new Coord(currentCoord.X, currentCoord.Y + 1);
+            return new Coordinate(currentCoordinate.X, currentCoordinate.Y + 1);
         }
     }
 
     public class Grid
     {
-        private readonly Dictionary<string,int> _dict = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _dict = new Dictionary<string, int>();
 
-        public int Get(int x, int y)
+        private int Get(int x, int y)
         {
             var key = GetKey(x, y);
             if (!_dict.ContainsKey(key)) return 0;
             return _dict[key];
         }
 
-        public void Set(Coord coord, int value)
+        public void Set(Coordinate coordinate, int value)
         {
-            Set(coord.X, coord.Y, value);
+            Set(coordinate.X, coordinate.Y, value);
         }
 
         public void Set(int x, int y, int value)
         {
             var key = GetKey(x, y);
-            _dict.Add(key,value);            
+            _dict.Add(key, value);
             // it will throw exception if value already exists, which good for us
         }
 
-        public bool DoesBlockExist(Coord currentCoord)
+        private bool DoesBlockExist(Coordinate currentCoordinate)
         {
-            return Get(currentCoord.X, currentCoord.Y) != 0;
+            return Get(currentCoordinate.X, currentCoordinate.Y) != 0;
         }
 
-
-        public bool DoesBlockOnTheLeftExist(Coord currentCoord)
+        public bool DoesBlockOnTheLeftExist(Coordinate currentCoordinate)
         {
-            return DoesBlockExist(Coord.ImmediateLeft(currentCoord));
+            return DoesBlockExist(Coordinate.ImmediateLeft(currentCoordinate));
         }
 
-        public bool DoesBlockOnTheRigthExist(Coord currentCoord)
+        public bool DoesBlockOnTheRigthExist(Coordinate currentCoordinate)
         {
-            return DoesBlockExist(Coord.ImmediateRight(currentCoord));
+            return DoesBlockExist(Coordinate.ImmediateRight(currentCoordinate));
         }
 
-        public bool DoesBlockBelowExist(Coord currentCoord)
+        public bool DoesBlockBelowExist(Coordinate currentCoordinate)
         {
-            return DoesBlockExist(Coord.ImmediateBelow(currentCoord));
+            return DoesBlockExist(Coordinate.ImmediateBelow(currentCoordinate));
         }
 
-        public bool DoesBlockAboveExist(Coord currentCoord)
+        public bool DoesBlockAboveExist(Coordinate currentCoordinate)
         {
-            return DoesBlockExist(Coord.ImmediateAbove(currentCoord));
+            return DoesBlockExist(Coordinate.ImmediateAbove(currentCoordinate));
         }
 
         private string GetKey(int x, int y)
